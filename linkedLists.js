@@ -1,5 +1,5 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 exports.Node = void 0;
 var Node = /** @class */ (function () {
     function Node(data) {
@@ -68,9 +68,59 @@ var LinkedList = /** @class */ (function () {
         }
         return current; // returns reference to node when i reaches position
     };
+    // For each node, execute method on the node's data element
+    LinkedList.prototype.foreach = function (method) {
+        var current = this._head;
+        for (var i = 0; i < this._size; i++) {
+            method(current.data);
+            current = current.next;
+        }
+    };
     // Transformation: takes the data from our Node, returns results of that transformation
-    LinkedList.prototype.foreach = function (method) { };
+    LinkedList.prototype.map = function (transformMethod) {
+        var current = this._head;
+        for (var i = 0; i < this._size; i++) {
+            // transform the node's data element: accept node's data element, return result
+            current.data = transformMethod(current.data);
+            current = current.next;
+        }
+    };
     return LinkedList;
 }());
-exports.default = LinkedList;
-//# sourceMappingURL=linkedLists.js.map
+exports["default"] = LinkedList;
+/*
+Two types of vars:
+Value type: aka 'primitives';
+Reference type: var itself is NOT the object--it's a reference TO the object (how linked list works)
+HEAD is reference to where the object exists in memory. Don't worry about its address; it's handled
+by memory mgmt from browser/console/whatever.
+In linked list, this object holds a reference to the next object and so on.
+Does my 'next' object exist || null? If null => you're at the end of the list.
+ln 83: current = current.next;  <= that's a reference to next object in memory
+
+Non-primitives are reference type.
+current.data changes data on that object in memory. If you're writing a function that takes an object
+and does something to it, you're changing where the object came from.
+*/
+// Arrange: have newList be a reference to this new LinkedList
+var newList = new LinkedList();
+newList.insertAt(0, 0);
+newList.insertAt(1, 1);
+newList.insertAt(2, 2);
+//console.log(newList.size());
+// Act
+//console.log(newList.findByPosition(2));
+//console.log(newList.findByPosition(1).data);
+var logItAll = function (data) { return console.log(data); };
+var add5 = function (data) { return data + 5; };
+var addSomething = function (data) {
+    if (data % 2 == 0)
+        return data + 1;
+    return data - 1;
+};
+newList.foreach(logItAll);
+newList.map(add5);
+newList.foreach(logItAll);
+newList.map(addSomething);
+newList.foreach(logItAll);
+// Assert
